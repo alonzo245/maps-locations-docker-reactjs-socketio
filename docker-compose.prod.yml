@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile.prod
+    environment:
+      - PORT=${SERVER_PORT}
+      - VIRTUAL_HOST=${SERVER_VIRTUAL_HOST}
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    volumes:
+      - ./server/src:/app/server/src
+    restart: always
+    
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+    depends_on: 
+      - server
+    links:
+      - server
+    restart: always
